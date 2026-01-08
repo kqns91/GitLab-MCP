@@ -89,6 +89,19 @@ type ResolveDiscussionOutput struct {
 	Resolved bool   `json:"resolved"`
 }
 
+// DeleteCommentInput は delete_merge_request_comment の入力パラメータ
+type DeleteCommentInput struct {
+	ProjectID       string `json:"project_id" jsonschema:"description:Project ID or URL-encoded path"`
+	MergeRequestIID int    `json:"merge_request_iid" jsonschema:"description:Merge Request IID"`
+	NoteID          int    `json:"note_id" jsonschema:"description:Note ID to delete"`
+}
+
+// DeleteCommentOutput は delete_merge_request_comment の出力
+type DeleteCommentOutput struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
 // clientHolder holds the GitLab client for handlers
 type clientHolder struct {
 	client *gitlab.Client
@@ -122,6 +135,12 @@ func Register(reg *registry.Registry, client *gitlab.Client) {
 		"GitLab Merge Request のディスカッションを解決済み/未解決に設定します",
 		func(ctx context.Context, req *mcp.CallToolRequest, input ResolveDiscussionInput) (*mcp.CallToolResult, ResolveDiscussionOutput, error) {
 			return resolveDiscussionHandler(holder.client, ctx, req, input)
+		})
+
+	registry.RegisterTool(reg, "delete_merge_request_comment",
+		"GitLab Merge Request のコメントを削除します",
+		func(ctx context.Context, req *mcp.CallToolRequest, input DeleteCommentInput) (*mcp.CallToolResult, DeleteCommentOutput, error) {
+			return deleteCommentHandler(holder.client, ctx, req, input)
 		})
 }
 
@@ -221,5 +240,17 @@ func resolveDiscussionHandler(client *gitlab.Client, ctx context.Context, req *m
 	return nil, ResolveDiscussionOutput{
 		ID:       discussion.ID,
 		Resolved: resolved,
+	}, nil
+}
+
+func deleteCommentHandler(client *gitlab.Client, ctx context.Context, req *mcp.CallToolRequest, input DeleteCommentInput) (*mcp.CallToolResult, DeleteCommentOutput, error) {
+	err := client.DeleteMergeRequestNote(input.ProjectID, input.MergeRequestIID, input.NoteID)
+	if err != nil {
+		return nil, DeleteCommentOutput{}, err
+	}
+
+	return nil, DeleteCommentOutput{
+		Success: true,
+		Message: "Comment deleted successfully",
 	}, nil
 }

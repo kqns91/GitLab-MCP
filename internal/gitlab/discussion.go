@@ -114,3 +114,12 @@ func (c *Client) ResolveMergeRequestDiscussion(projectID string, mrIID int, disc
 	}
 	return discussion, nil
 }
+
+// DeleteMergeRequestNote はMRのコメント（ノート）を削除する
+func (c *Client) DeleteMergeRequestNote(projectID string, mrIID int, noteID int) error {
+	resp, err := c.client.Notes.DeleteMergeRequestNote(projectID, int64(mrIID), int64(noteID))
+	if err != nil {
+		return FromGitLabResponse(err, resp)
+	}
+	return nil
+}

@@ -307,6 +307,76 @@ func TestResolveDiscussionTool(t *testing.T) {
 	})
 }
 
+func TestDeleteMergeRequestCommentTool(t *testing.T) {
+	t.Run("deletes comment successfully", func(t *testing.T) {
+		handler := func(w http.ResponseWriter, r *http.Request) {
+			assert.Equal(t, "/api/v4/projects/test-project/merge_requests/1/notes/123", r.URL.Path)
+			assert.Equal(t, "DELETE", r.Method)
+			w.WriteHeader(http.StatusNoContent)
+		}
+
+		client, reg, cleanup := setupTestServer(t, handler)
+		defer cleanup()
+
+		assert.True(t, reg.IsRegistered("delete_merge_request_comment"))
+
+		input := DeleteCommentInput{
+			ProjectID:       "test-project",
+			MergeRequestIID: 1,
+			NoteID:          123,
+		}
+
+		ctx := context.Background()
+		_, output, err := deleteCommentHandler(client, ctx, nil, input)
+
+		require.NoError(t, err)
+		assert.True(t, output.Success)
+		assert.Equal(t, "Comment deleted successfully", output.Message)
+	})
+
+	t.Run("returns error for non-existent comment", func(t *testing.T) {
+		handler := func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(map[string]string{"message": "404 Not found"})
+		}
+
+		client, _, cleanup := setupTestServer(t, handler)
+		defer cleanup()
+
+		input := DeleteCommentInput{
+			ProjectID:       "test-project",
+			MergeRequestIID: 1,
+			NoteID:          999,
+		}
+
+		ctx := context.Background()
+		_, _, err := deleteCommentHandler(client, ctx, nil, input)
+
+		assert.Error(t, err)
+	})
+
+	t.Run("returns error for forbidden access", func(t *testing.T) {
+		handler := func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusForbidden)
+			json.NewEncoder(w).Encode(map[string]string{"message": "403 Forbidden"})
+		}
+
+		client, _, cleanup := setupTestServer(t, handler)
+		defer cleanup()
+
+		input := DeleteCommentInput{
+			ProjectID:       "test-project",
+			MergeRequestIID: 1,
+			NoteID:          123,
+		}
+
+		ctx := context.Background()
+		_, _, err := deleteCommentHandler(client, ctx, nil, input)
+
+		assert.Error(t, err)
+	})
+}
+
 func TestToolDisabled(t *testing.T) {
 	t.Run("disabled tool is not registered in server", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

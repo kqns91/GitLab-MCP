@@ -61,6 +61,9 @@
 3. When `list_merge_request_discussions` ツールが呼び出される, the GitLab MCP Server shall MR のディスカッション一覧を返す
 4. When `resolve_discussion` ツールが呼び出される, the GitLab MCP Server shall 指定されたディスカッションを解決済みとしてマークする
 5. The GitLab MCP Server shall 各ディスカッションについて、作成者、内容、解決状態、関連するファイル・行情報を含める
+6. When `delete_merge_request_comment` ツールが呼び出される, the GitLab MCP Server shall 指定されたノート ID のコメントを削除する
+7. If 削除対象のコメントが存在しない, then the GitLab MCP Server shall 「コメントが見つからない」というエラーを返す
+8. If 削除権限がない, then the GitLab MCP Server shall 「削除権限がありません」というエラーを返す
 
 ### Requirement 7: Merge Request 承認
 **Objective:** As a AI エージェント, I want MR を承認する, so that コードレビュー完了を示せる

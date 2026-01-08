@@ -176,6 +176,57 @@ func TestResolveMergeRequestDiscussion_Unresolve(t *testing.T) {
 	assert.False(t, discussion.Notes[0].Resolved)
 }
 
+func TestDeleteMergeRequestNote_Success(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/api/v4/projects/test-project/merge_requests/1/notes/123", r.URL.Path)
+		assert.Equal(t, "DELETE", r.Method)
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer server.Close()
+
+	client, err := NewClient(server.URL, "test-token")
+	require.NoError(t, err)
+
+	err = client.DeleteMergeRequestNote("test-project", 1, 123)
+	require.NoError(t, err)
+}
+
+func TestDeleteMergeRequestNote_NotFound(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"message": "404 Not found"})
+	}))
+	defer server.Close()
+
+	client, err := NewClient(server.URL, "test-token")
+	require.NoError(t, err)
+
+	err = client.DeleteMergeRequestNote("test-project", 1, 999)
+
+	assert.Error(t, err)
+	mcpErr, ok := err.(*MCPError)
+	require.True(t, ok)
+	assert.Equal(t, ErrCodeNotFound, mcpErr.Code)
+}
+
+func TestDeleteMergeRequestNote_Forbidden(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusForbidden)
+		json.NewEncoder(w).Encode(map[string]string{"message": "403 Forbidden"})
+	}))
+	defer server.Close()
+
+	client, err := NewClient(server.URL, "test-token")
+	require.NoError(t, err)
+
+	err = client.DeleteMergeRequestNote("test-project", 1, 123)
+
+	assert.Error(t, err)
+	mcpErr, ok := err.(*MCPError)
+	require.True(t, ok)
+	assert.Equal(t, ErrCodeForbidden, mcpErr.Code)
+}
+
 // Helper functions
 func intPtr(i int) *int {
 	return &i

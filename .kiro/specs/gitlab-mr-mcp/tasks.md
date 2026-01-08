@@ -154,6 +154,27 @@
   - ディスカッションを解決済み/未解決に設定
   - _Requirements: 6.4, 11.4_
 
+## Task 15: MCP ツール実装 - コメント削除
+
+- [x] 15.1 GitLab API クライアントにコメント削除メソッドを追加
+  - SDK の NotesService.DeleteMergeRequestNote を呼び出すラッパーメソッド
+  - 削除対象が見つからない場合（404）のエラー変換
+  - 削除権限がない場合（403）のエラー変換
+  - _Requirements: 6.6, 6.7, 6.8_
+
+- [x] 15.2 delete_merge_request_comment ツールを実装
+  - MCP ツールとしてコメント削除を公開
+  - 入力パラメータ: project_id, merge_request_iid, note_id
+  - 削除成功時のレスポンス定義
+  - エラーハンドリング（コメント不在、権限不足）
+  - _Requirements: 6.6, 6.7, 6.8, 11.4_
+
+- [x] 15.3 コメント削除のテストを実装
+  - クライアントメソッドのユニットテスト
+  - 404/403 エラーケースのテスト
+  - ツールハンドラのテスト
+  - _Requirements: 6.6, 6.7, 6.8_
+
 ## Task 10: MCP ツール実装 - Approval
 
 - [x] 10.1 approve_merge_request ツールを実装
