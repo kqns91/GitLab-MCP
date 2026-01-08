@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime/debug"
 
 	"github.com/kqns91/gitlab-mcp/internal/config"
 	"github.com/kqns91/gitlab-mcp/internal/gitlab"
@@ -74,17 +75,18 @@ func registerAllTools(reg *registry.Registry, client *gitlab.Client) {
 	pipeline.Register(reg, client)
 }
 
-// Version information (set via ldflags)
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
-
 func init() {
-	// Print version information if requested
 	if len(os.Args) > 1 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
-		fmt.Printf("gitlab-mcp %s (commit: %s, built: %s)\n", version, commit, date)
+		fmt.Printf("gitlab-mcp %s\n", getVersion())
 		os.Exit(0)
 	}
+}
+
+func getVersion() string {
+	if info, ok := debug.ReadBuildInfo(); ok {
+		if info.Main.Version != "" && info.Main.Version != "(devel)" {
+			return info.Main.Version
+		}
+	}
+	return "dev"
 }
