@@ -14,8 +14,24 @@ func (c *Client) ListMergeRequestPipelines(projectID string, mrIID int) ([]*gogi
 }
 
 // ListPipelineJobs はパイプラインのジョブ一覧を取得する
-func (c *Client) ListPipelineJobs(projectID string, pipelineID int) ([]*gogitlab.Job, error) {
-	jobs, resp, err := c.client.Jobs.ListPipelineJobs(projectID, int64(pipelineID), nil)
+func (c *Client) ListPipelineJobs(projectID string, pipelineID int, pagination *PaginationOptions) ([]*gogitlab.Job, error) {
+	page, perPage := 1, 100
+	if pagination != nil {
+		if pagination.Page > 0 {
+			page = pagination.Page
+		}
+		if pagination.PerPage > 0 {
+			perPage = pagination.PerPage
+		}
+	}
+
+	opts := &gogitlab.ListJobsOptions{
+		ListOptions: gogitlab.ListOptions{
+			Page:    int64(page),
+			PerPage: int64(perPage),
+		},
+	}
+	jobs, resp, err := c.client.Jobs.ListPipelineJobs(projectID, int64(pipelineID), opts)
 	if err != nil {
 		return nil, FromGitLabResponse(err, resp)
 	}

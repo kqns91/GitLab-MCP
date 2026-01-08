@@ -71,9 +71,31 @@ func (c *Client) CreateMergeRequestDiscussion(projectID string, mrIID int, opts 
 	return discussion, nil
 }
 
+// PaginationOptions はページネーションのオプション
+type PaginationOptions struct {
+	Page    int
+	PerPage int
+}
+
 // ListMergeRequestDiscussions はMRのディスカッション一覧を取得する
-func (c *Client) ListMergeRequestDiscussions(projectID string, mrIID int) ([]*gogitlab.Discussion, error) {
-	discussions, resp, err := c.client.Discussions.ListMergeRequestDiscussions(projectID, int64(mrIID), nil)
+func (c *Client) ListMergeRequestDiscussions(projectID string, mrIID int, pagination *PaginationOptions) ([]*gogitlab.Discussion, error) {
+	page, perPage := 1, 100
+	if pagination != nil {
+		if pagination.Page > 0 {
+			page = pagination.Page
+		}
+		if pagination.PerPage > 0 {
+			perPage = pagination.PerPage
+		}
+	}
+
+	opts := &gogitlab.ListMergeRequestDiscussionsOptions{
+		ListOptions: gogitlab.ListOptions{
+			Page:    int64(page),
+			PerPage: int64(perPage),
+		},
+	}
+	discussions, resp, err := c.client.Discussions.ListMergeRequestDiscussions(projectID, int64(mrIID), opts)
 	if err != nil {
 		return nil, FromGitLabResponse(err, resp)
 	}

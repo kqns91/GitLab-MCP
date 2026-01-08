@@ -255,7 +255,7 @@ func TestGetMergeRequestChanges_Success(t *testing.T) {
 	client, err := NewClient(server.URL, "test-token")
 	require.NoError(t, err)
 
-	diffs, err := client.GetMergeRequestChanges("test-project", 1)
+	diffs, err := client.GetMergeRequestChanges("test-project", 1, nil)
 
 	require.NoError(t, err)
 	assert.Len(t, diffs, 2)

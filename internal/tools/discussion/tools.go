@@ -51,6 +51,8 @@ type AddDiscussionOutput struct {
 type ListDiscussionsInput struct {
 	ProjectID       string `json:"project_id" jsonschema:"description:Project ID or URL-encoded path"`
 	MergeRequestIID int    `json:"merge_request_iid" jsonschema:"description:Merge Request IID"`
+	Page            int    `json:"page,omitempty" jsonschema:"description:Page number (default: 1)"`
+	PerPage         int    `json:"per_page,omitempty" jsonschema:"description:Number of items per page (default: 100, max: 100)"`
 }
 
 // DiscussionNote はディスカッション内のノート情報
@@ -169,7 +171,15 @@ func addDiscussionHandler(client *gitlab.Client, ctx context.Context, req *mcp.C
 }
 
 func listDiscussionsHandler(client *gitlab.Client, ctx context.Context, req *mcp.CallToolRequest, input ListDiscussionsInput) (*mcp.CallToolResult, ListDiscussionsOutput, error) {
-	discussions, err := client.ListMergeRequestDiscussions(input.ProjectID, input.MergeRequestIID)
+	var pagination *gitlab.PaginationOptions
+	if input.Page > 0 || input.PerPage > 0 {
+		pagination = &gitlab.PaginationOptions{
+			Page:    input.Page,
+			PerPage: input.PerPage,
+		}
+	}
+
+	discussions, err := client.ListMergeRequestDiscussions(input.ProjectID, input.MergeRequestIID, pagination)
 	if err != nil {
 		return nil, ListDiscussionsOutput{}, err
 	}

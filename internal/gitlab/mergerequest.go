@@ -9,11 +9,28 @@ type ListMergeRequestsOptions struct {
 	State      *string
 	AuthorID   *int
 	AssigneeID *int
+	Page       int
+	PerPage    int
 }
 
 // ListMergeRequests はプロジェクトのMR一覧を取得する
 func (c *Client) ListMergeRequests(projectID string, opts *ListMergeRequestsOptions) ([]*gogitlab.BasicMergeRequest, error) {
-	listOpts := &gogitlab.ListProjectMergeRequestsOptions{}
+	page, perPage := 1, 100
+	if opts != nil {
+		if opts.Page > 0 {
+			page = opts.Page
+		}
+		if opts.PerPage > 0 {
+			perPage = opts.PerPage
+		}
+	}
+
+	listOpts := &gogitlab.ListProjectMergeRequestsOptions{
+		ListOptions: gogitlab.ListOptions{
+			Page:    int64(page),
+			PerPage: int64(perPage),
+		},
+	}
 
 	if opts != nil {
 		if opts.State != nil {
@@ -182,8 +199,24 @@ func (c *Client) MergeMergeRequest(projectID string, mrIID int, opts *MergeMerge
 }
 
 // GetMergeRequestChanges はMRの変更差分を取得する
-func (c *Client) GetMergeRequestChanges(projectID string, mrIID int) ([]*gogitlab.MergeRequestDiff, error) {
-	diffs, resp, err := c.client.MergeRequests.ListMergeRequestDiffs(projectID, int64(mrIID), nil)
+func (c *Client) GetMergeRequestChanges(projectID string, mrIID int, pagination *PaginationOptions) ([]*gogitlab.MergeRequestDiff, error) {
+	page, perPage := 1, 100
+	if pagination != nil {
+		if pagination.Page > 0 {
+			page = pagination.Page
+		}
+		if pagination.PerPage > 0 {
+			perPage = pagination.PerPage
+		}
+	}
+
+	opts := &gogitlab.ListMergeRequestDiffsOptions{
+		ListOptions: gogitlab.ListOptions{
+			Page:    int64(page),
+			PerPage: int64(perPage),
+		},
+	}
+	diffs, resp, err := c.client.MergeRequests.ListMergeRequestDiffs(projectID, int64(mrIID), opts)
 	if err != nil {
 		return nil, FromGitLabResponse(err, resp)
 	}

@@ -33,6 +33,8 @@ type ListPipelinesOutput struct {
 type GetJobsInput struct {
 	ProjectID  string `json:"project_id" jsonschema:"description:Project ID or URL-encoded path"`
 	PipelineID int    `json:"pipeline_id" jsonschema:"description:Pipeline ID"`
+	Page       int    `json:"page,omitempty" jsonschema:"description:Page number (default: 1)"`
+	PerPage    int    `json:"per_page,omitempty" jsonschema:"description:Number of items per page (default: 100, max: 100)"`
 }
 
 // JobInfo はジョブ情報
@@ -98,7 +100,15 @@ func listPipelinesHandler(client *gitlab.Client, ctx context.Context, req *mcp.C
 }
 
 func getJobsHandler(client *gitlab.Client, ctx context.Context, req *mcp.CallToolRequest, input GetJobsInput) (*mcp.CallToolResult, GetJobsOutput, error) {
-	jobs, err := client.ListPipelineJobs(input.ProjectID, input.PipelineID)
+	var pagination *gitlab.PaginationOptions
+	if input.Page > 0 || input.PerPage > 0 {
+		pagination = &gitlab.PaginationOptions{
+			Page:    input.Page,
+			PerPage: input.PerPage,
+		}
+	}
+
+	jobs, err := client.ListPipelineJobs(input.ProjectID, input.PipelineID, pagination)
 	if err != nil {
 		return nil, GetJobsOutput{}, err
 	}

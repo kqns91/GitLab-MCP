@@ -99,7 +99,7 @@ func TestListPipelineJobs_Success(t *testing.T) {
 	client, err := NewClient(server.URL, "test-token")
 	require.NoError(t, err)
 
-	jobs, err := client.ListPipelineJobs("test-project", 100)
+	jobs, err := client.ListPipelineJobs("test-project", 100, nil)
 
 	require.NoError(t, err)
 	assert.Len(t, jobs, 3)
@@ -121,7 +121,7 @@ func TestListPipelineJobs_NotFound(t *testing.T) {
 	client, err := NewClient(server.URL, "test-token")
 	require.NoError(t, err)
 
-	jobs, err := client.ListPipelineJobs("test-project", 999)
+	jobs, err := client.ListPipelineJobs("test-project", 999, nil)
 
 	assert.Nil(t, jobs)
 	assert.Error(t, err)

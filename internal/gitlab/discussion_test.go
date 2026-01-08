@@ -120,7 +120,7 @@ func TestListMergeRequestDiscussions_Success(t *testing.T) {
 	client, err := NewClient(server.URL, "test-token")
 	require.NoError(t, err)
 
-	discussions, err := client.ListMergeRequestDiscussions("test-project", 1)
+	discussions, err := client.ListMergeRequestDiscussions("test-project", 1, nil)
 
 	require.NoError(t, err)
 	assert.Len(t, discussions, 2)
