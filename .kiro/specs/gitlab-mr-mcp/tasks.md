@@ -70,7 +70,7 @@
 
 ## Task 5: Discussion API クライアントメソッド
 
-- [ ] 5.1 (P) ディスカッション操作のラッパーメソッドを実装
+- [x] 5.1 (P) ディスカッション操作のラッパーメソッドを実装
   - SDK の NotesService.CreateMergeRequestNote でコメントを追加
   - SDK の DiscussionsService.CreateMergeRequestDiscussion で位置情報付きディスカッションを作成
   - SDK の DiscussionsService.ListMergeRequestDiscussions でディスカッション一覧を取得
@@ -79,7 +79,7 @@
 
 ## Task 6: Approval API クライアントメソッド
 
-- [ ] 6.1 (P) 承認操作のラッパーメソッドを実装
+- [x] 6.1 (P) 承認操作のラッパーメソッドを実装
   - SDK の MergeRequestApprovalsService.ApproveMergeRequest で承認
   - SDK の MergeRequestApprovalsService.UnapproveMergeRequest で承認取消
   - SDK の MergeRequestApprovalsService.GetConfiguration で承認状態・承認者を取得
@@ -88,7 +88,7 @@
 
 ## Task 7: Pipeline API クライアントメソッド
 
-- [ ] 7.1 (P) パイプライン情報取得のラッパーメソッドを実装
+- [x] 7.1 (P) パイプライン情報取得のラッパーメソッドを実装
   - SDK の MergeRequestsService.ListMergeRequestPipelines で MR 関連パイプラインを取得
   - SDK の JobsService.ListPipelineJobs でジョブ一覧を取得
   - _Requirements: 10.1, 10.2, 10.3_
