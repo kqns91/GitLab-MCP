@@ -95,96 +95,96 @@
 
 ## Task 8: MCP ツール実装 - MergeRequest
 
-- [ ] 8.1 list_merge_requests ツールを実装
+- [x] 8.1 list_merge_requests ツールを実装
   - MCP ツールとして MR 一覧取得を公開
   - 入力パラメータの JSON Schema を定義
   - フィルタリングオプション（state, author_id, assignee_id）をサポート
   - 各 MR の基本情報を構造化して返却
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 11.4_
 
-- [ ] 8.2 get_merge_request ツールを実装
+- [x] 8.2 get_merge_request ツールを実装
   - MCP ツールとして MR 詳細取得を公開
   - 変更差分を含めるオプションをサポート
   - MR 不在時の適切なエラーメッセージ
   - _Requirements: 3.1, 3.2, 3.4, 11.4_
 
-- [ ] 8.3 create_merge_request ツールを実装
+- [x] 8.3 create_merge_request ツールを実装
   - MCP ツールとして MR 作成を公開
   - 必須パラメータ（ソースブランチ、ターゲットブランチ、タイトル、説明）の検証
   - オプションパラメータ（アサイン先、レビュアー、ラベル）のサポート
   - 作成成功時に IID と URL を返却
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 11.4_
 
-- [ ] 8.4 update_merge_request ツールを実装
+- [x] 8.4 update_merge_request ツールを実装
   - MCP ツールとして MR 更新を公開
   - 更新可能フィールド（タイトル、説明、アサイン先、レビュアー、ラベル、ターゲットブランチ）
   - 更新後の MR 情報を返却
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 11.4_
 
-- [ ] 8.5 merge_merge_request ツールを実装
+- [x] 8.5 merge_merge_request ツールを実装
   - MCP ツールとして MR マージを公開
   - squash オプションとソースブランチ削除オプション
   - マージ不可時のエラーメッセージ、パイプライン失敗時の警告
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 11.4_
 
-- [ ] 8.6 get_merge_request_changes ツールを実装
+- [x] 8.6 get_merge_request_changes ツールを実装
   - MCP ツールとして変更差分取得を公開
   - ファイルごとの変更タイプ、パス、diff 内容を返却
   - _Requirements: 9.1, 9.2, 9.3, 11.4_
 
 ## Task 9: MCP ツール実装 - Discussion
 
-- [ ] 9.1 add_merge_request_comment ツールを実装
+- [x] 9.1 add_merge_request_comment ツールを実装
   - MCP ツールとして一般コメント追加を公開
   - コメント本文を MR に追加
   - _Requirements: 6.1, 11.4_
 
-- [ ] 9.2 add_merge_request_discussion ツールを実装
+- [x] 9.2 add_merge_request_discussion ツールを実装
   - MCP ツールとして行コメント（ディスカッション）作成を公開
   - ファイルパスと行番号を指定した位置情報付きコメント
   - _Requirements: 6.2, 11.4_
 
-- [ ] 9.3 list_merge_request_discussions ツールを実装
+- [x] 9.3 list_merge_request_discussions ツールを実装
   - MCP ツールとしてディスカッション一覧取得を公開
   - 作成者、内容、解決状態、関連ファイル・行情報を含める
   - _Requirements: 6.3, 6.5, 11.4_
 
-- [ ] 9.4 resolve_discussion ツールを実装
+- [x] 9.4 resolve_discussion ツールを実装
   - MCP ツールとしてディスカッション解決を公開
   - ディスカッションを解決済み/未解決に設定
   - _Requirements: 6.4, 11.4_
 
 ## Task 10: MCP ツール実装 - Approval
 
-- [ ] 10.1 approve_merge_request ツールを実装
+- [x] 10.1 approve_merge_request ツールを実装
   - MCP ツールとして MR 承認を公開
   - 承認権限エラーの適切なハンドリング
   - _Requirements: 7.1, 7.4, 11.4_
 
-- [ ] 10.2 unapprove_merge_request ツールを実装
+- [x] 10.2 unapprove_merge_request ツールを実装
   - MCP ツールとして MR 承認取消を公開
   - _Requirements: 7.2, 11.4_
 
-- [ ] 10.3 get_merge_request_approvals ツールを実装
+- [x] 10.3 get_merge_request_approvals ツールを実装
   - MCP ツールとして承認状態取得を公開
   - 承認状態と承認者一覧を返却
   - _Requirements: 7.3, 11.4_
 
 ## Task 11: MCP ツール実装 - Pipeline
 
-- [ ] 11.1 list_merge_request_pipelines ツールを実装
+- [x] 11.1 list_merge_request_pipelines ツールを実装
   - MCP ツールとして MR パイプライン一覧取得を公開
   - 各パイプラインの状態、日時、URL を返却
   - _Requirements: 10.1, 10.2, 11.4_
 
-- [ ] 11.2 get_pipeline_jobs ツールを実装
+- [x] 11.2 get_pipeline_jobs ツールを実装
   - MCP ツールとしてパイプラインジョブ一覧取得を公開
   - 各ジョブの名前、ステージ、状態を返却
   - _Requirements: 10.3, 11.4_
 
 ## Task 12: MCP サーバー統合
 
-- [ ] 12.1 MCP サーバーのエントリーポイントを実装
+- [x] 12.1 MCP サーバーのエントリーポイントを実装
   - 設定の読み込みと検証
   - GitLab クライアントの初期化
   - ツールレジストリへの全ツール登録
@@ -194,19 +194,19 @@
 
 ## Task 13: ユニットテスト
 
-- [ ] 13.1 (P) 設定管理のテストを実装
+- [x] 13.1 (P) 設定管理のテストを実装
   - 環境変数パースのテスト
   - ツール有効化/無効化ロジックのテスト
   - DISABLED_TOOLS 優先ルールのテスト
   - _Requirements: 1.1, 13.1, 13.2, 13.3_
 
-- [ ] 13.2 (P) GitLab API クライアントのテストを実装
+- [x] 13.2 (P) GitLab API クライアントのテストを実装
   - SDK クライアントラッパーのテスト（httptest でモック GitLab API を構築）
   - SDK エラーから内部エラーへの変換テスト
   - エラーハンドリングのテスト（401, 403, 404, 429, 5xx）
   - _Requirements: 12.1, 12.2, 12.3_
 
-- [ ] 13.3 (P) ツールレジストリのテストを実装
+- [x] 13.3 (P) ツールレジストリのテストを実装
   - ツール登録のテスト
   - 有効/無効判定のテスト
   - 無効化ツールの一覧除外テスト
@@ -214,7 +214,7 @@
 
 ## Task 14: 統合テスト
 
-- [ ] 14.1 MCP サーバー全体の統合テストを実装
+- [x] 14.1 MCP サーバー全体の統合テストを実装
   - モック GitLab API を使用したエンドツーエンドフロー
   - ツール呼び出しとレスポンス検証
   - エラーケース（認証失敗、リソース不在、レート制限）の動作確認
