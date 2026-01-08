@@ -2,19 +2,19 @@
 
 ## Task 1: プロジェクト基盤と設定管理
 
-- [ ] 1.1 Go モジュールの初期化と依存関係の設定
+- [x] 1.1 Go モジュールの初期化と依存関係の設定
   - Go モジュールを作成し、MCP Go SDK と必要な依存関係を追加する
   - プロジェクトのディレクトリ構造を作成する
   - _Requirements: 11.1_
 
-- [ ] 1.2 環境変数から GitLab 接続情報を読み込む設定管理を実装
+- [x] 1.2 環境変数から GitLab 接続情報を読み込む設定管理を実装
   - GitLab URL と認証トークンを環境変数から読み込む
   - 必須項目が未設定の場合にエラーを返す
   - 認証トークンがログに出力されないことを保証する
   - デバッグモードの有効/無効を環境変数で制御する
   - _Requirements: 1.1, 1.4, 12.4_
 
-- [ ] 1.3 ツール有効化/無効化の設定ロジックを実装
+- [x] 1.3 ツール有効化/無効化の設定ロジックを実装
   - ENABLED_TOOLS 環境変数のパース（カンマ区切り）
   - DISABLED_TOOLS 環境変数のパース（カンマ区切り）
   - DISABLED_TOOLS を ENABLED_TOOLS より優先する判定ロジック
@@ -23,13 +23,13 @@
 
 ## Task 2: GitLab API クライアント基盤
 
-- [ ] 2.1 GitLab Go SDK クライアントラッパーを実装
+- [x] 2.1 GitLab Go SDK クライアントラッパーを実装
   - gitlab.com/gitlab-org/api/client-go を使用してクライアントを初期化
   - 環境変数から URL とトークンを受け取りクライアントを構成
   - SDK の各サービス（MergeRequests, Discussions, Pipelines など）へのアクセサを提供
   - _Requirements: 1.2, 1.3, 2.5, 3.2, 3.3, 6.5, 9.2, 10.2_
 
-- [ ] 2.2 エラー型とエラーハンドリングを実装
+- [x] 2.2 エラー型とエラーハンドリングを実装
   - エラーコード（unauthorized, forbidden, not_found, rate_limited など）を定義
   - SDK エラー（*gitlab.ErrorResponse）から内部エラー型への変換
   - レート制限エラー（429）の検出とリトライ可能フラグ
@@ -39,7 +39,7 @@
 
 ## Task 3: ツールレジストリ
 
-- [ ] 3.1 ツールの登録と管理を行うレジストリを実装
+- [x] 3.1 ツールの登録と管理を行うレジストリを実装
   - ツールの登録機能
   - 設定に基づくツールの有効/無効判定
   - 無効化されたツールをツール一覧から除外
@@ -48,21 +48,21 @@
 
 ## Task 4: MergeRequest API クライアントメソッド
 
-- [ ] 4.1 (P) MR 一覧取得と詳細取得のラッパーメソッドを実装
+- [x] 4.1 (P) MR 一覧取得と詳細取得のラッパーメソッドを実装
   - SDK の MergeRequestsService.ListProjectMergeRequests を呼び出す
   - SDK の ListMergeRequestsOptions でフィルタリング（state, author_id, assignee_id）
   - SDK の MergeRequestsService.GetMergeRequest で詳細情報を取得
   - SDK エラーから内部エラーへの変換
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 3.1, 3.4_
 
-- [ ] 4.2 (P) MR 作成と更新のラッパーメソッドを実装
+- [x] 4.2 (P) MR 作成と更新のラッパーメソッドを実装
   - SDK の MergeRequestsService.CreateMergeRequest を呼び出す
   - SDK の CreateMergeRequestOptions でオプション指定（アサイン先、レビュアー、ラベル）
   - SDK の MergeRequestsService.UpdateMergeRequest で既存 MR を更新
   - SDK エラーから内部エラーへの変換
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 4.3 (P) MR マージと変更差分取得のラッパーメソッドを実装
+- [x] 4.3 (P) MR マージと変更差分取得のラッパーメソッドを実装
   - SDK の MergeRequestsService.AcceptMergeRequest を呼び出す（squash、削除オプション付き）
   - マージ不可状態（conflicts, pipeline failure）のエラー変換
   - SDK の MergeRequestsService.GetMergeRequestDiffVersions で変更差分を取得
