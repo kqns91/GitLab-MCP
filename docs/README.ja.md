@@ -103,6 +103,8 @@ export GITLAB_MCP_DISABLED_TOOLS="merge_merge_request,approve_merge_request"
 | `add_merge_request_discussion` | コードの特定行にディスカッションを作成 |
 | `list_merge_request_discussions` | Merge Request の全ディスカッションを一覧取得 |
 | `resolve_discussion` | ディスカッションを解決済み/未解決に設定 |
+| `delete_merge_request_comment` | Merge Request のコメントを削除 |
+| `reply_to_merge_request_comment` | 既存のディスカッションに返信 |
 
 ### 承認
 
