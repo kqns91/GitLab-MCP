@@ -103,6 +103,8 @@ export GITLAB_MCP_DISABLED_TOOLS="merge_merge_request,approve_merge_request"
 | `add_merge_request_discussion` | Create a line-specific discussion on code |
 | `list_merge_request_discussions` | List all discussions on a merge request |
 | `resolve_discussion` | Resolve or unresolve a discussion |
+| `delete_merge_request_comment` | Delete a comment from a merge request |
+| `reply_to_merge_request_comment` | Reply to an existing discussion |
 
 ### Approval
 
