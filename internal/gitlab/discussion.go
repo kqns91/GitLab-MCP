@@ -123,3 +123,16 @@ func (c *Client) DeleteMergeRequestNote(projectID string, mrIID int, noteID int)
 	}
 	return nil
 }
+
+// AddMergeRequestDiscussionNote はディスカッションに返信ノートを追加する
+func (c *Client) AddMergeRequestDiscussionNote(projectID string, mrIID int, discussionID string, body string) (*gogitlab.Note, error) {
+	opts := &gogitlab.AddMergeRequestDiscussionNoteOptions{
+		Body: &body,
+	}
+
+	note, resp, err := c.client.Discussions.AddMergeRequestDiscussionNote(projectID, int64(mrIID), discussionID, opts)
+	if err != nil {
+		return nil, FromGitLabResponse(err, resp)
+	}
+	return note, nil
+}

@@ -102,6 +102,22 @@ type DeleteCommentOutput struct {
 	Message string `json:"message"`
 }
 
+// ReplyToCommentInput は reply_to_merge_request_comment の入力パラメータ
+type ReplyToCommentInput struct {
+	ProjectID       string `json:"project_id" jsonschema:"description:Project ID or URL-encoded path"`
+	MergeRequestIID int    `json:"merge_request_iid" jsonschema:"description:Merge Request IID"`
+	DiscussionID    string `json:"discussion_id" jsonschema:"description:Discussion ID to reply to"`
+	Body            string `json:"body" jsonschema:"description:Reply body text"`
+}
+
+// ReplyToCommentOutput は reply_to_merge_request_comment の出力
+type ReplyToCommentOutput struct {
+	ID         int64  `json:"id"`
+	Body       string `json:"body"`
+	AuthorName string `json:"author_name,omitempty"`
+	CreatedAt  string `json:"created_at,omitempty"`
+}
+
 // clientHolder holds the GitLab client for handlers
 type clientHolder struct {
 	client *gitlab.Client
@@ -141,6 +157,12 @@ func Register(reg *registry.Registry, client *gitlab.Client) {
 		"GitLab Merge Request のコメントを削除します",
 		func(ctx context.Context, req *mcp.CallToolRequest, input DeleteCommentInput) (*mcp.CallToolResult, DeleteCommentOutput, error) {
 			return deleteCommentHandler(holder.client, ctx, req, input)
+		})
+
+	registry.RegisterTool(reg, "reply_to_merge_request_comment",
+		"GitLab Merge Request のディスカッションに返信を追加します",
+		func(ctx context.Context, req *mcp.CallToolRequest, input ReplyToCommentInput) (*mcp.CallToolResult, ReplyToCommentOutput, error) {
+			return replyToCommentHandler(holder.client, ctx, req, input)
 		})
 }
 
@@ -252,5 +274,26 @@ func deleteCommentHandler(client *gitlab.Client, ctx context.Context, req *mcp.C
 	return nil, DeleteCommentOutput{
 		Success: true,
 		Message: "Comment deleted successfully",
+	}, nil
+}
+
+func replyToCommentHandler(client *gitlab.Client, ctx context.Context, req *mcp.CallToolRequest, input ReplyToCommentInput) (*mcp.CallToolResult, ReplyToCommentOutput, error) {
+	note, err := client.AddMergeRequestDiscussionNote(input.ProjectID, input.MergeRequestIID, input.DiscussionID, input.Body)
+	if err != nil {
+		return nil, ReplyToCommentOutput{}, err
+	}
+
+	authorName := note.Author.Username
+
+	createdAt := ""
+	if note.CreatedAt != nil {
+		createdAt = note.CreatedAt.String()
+	}
+
+	return nil, ReplyToCommentOutput{
+		ID:         int64(note.ID),
+		Body:       note.Body,
+		AuthorName: authorName,
+		CreatedAt:  createdAt,
 	}, nil
 }

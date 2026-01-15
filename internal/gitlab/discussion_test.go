@@ -227,6 +227,53 @@ func TestDeleteMergeRequestNote_Forbidden(t *testing.T) {
 	assert.Equal(t, ErrCodeForbidden, mcpErr.Code)
 }
 
+func TestAddMergeRequestDiscussionNote_Success(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assert.Equal(t, "/api/v4/projects/test-project/merge_requests/1/discussions/disc123/notes", r.URL.Path)
+		assert.Equal(t, "POST", r.Method)
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]any{
+			"id":   42,
+			"body": "This is a reply",
+			"author": map[string]any{
+				"id":       1,
+				"username": "testuser",
+			},
+		})
+	}))
+	defer server.Close()
+
+	client, err := NewClient(server.URL, "test-token")
+	require.NoError(t, err)
+
+	note, err := client.AddMergeRequestDiscussionNote("test-project", 1, "disc123", "This is a reply")
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(42), note.ID)
+	assert.Equal(t, "This is a reply", note.Body)
+	assert.Equal(t, "testuser", note.Author.Username)
+}
+
+func TestAddMergeRequestDiscussionNote_NotFound(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]string{"message": "404 Not found"})
+	}))
+	defer server.Close()
+
+	client, err := NewClient(server.URL, "test-token")
+	require.NoError(t, err)
+
+	note, err := client.AddMergeRequestDiscussionNote("test-project", 1, "unknown-disc", "reply")
+
+	assert.Nil(t, note)
+	assert.Error(t, err)
+	mcpErr, ok := err.(*MCPError)
+	require.True(t, ok)
+	assert.Equal(t, ErrCodeNotFound, mcpErr.Code)
+}
+
 // Helper functions
 func intPtr(i int) *int {
 	return &i
