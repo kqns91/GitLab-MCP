@@ -57,3 +57,8 @@ func (c *Client) Jobs() gogitlab.JobsServiceInterface {
 func (c *Client) Notes() gogitlab.NotesServiceInterface {
 	return c.client.Notes
 }
+
+// Issues returns the IssuesService
+func (c *Client) Issues() gogitlab.IssuesServiceInterface {
+	return c.client.Issues
+}
