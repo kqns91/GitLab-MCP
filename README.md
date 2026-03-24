@@ -4,15 +4,16 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 
-A Model Context Protocol (MCP) server that enables AI agents to interact with GitLab Merge Requests. This server exposes GitLab MR operations as MCP tools, allowing seamless integration with Claude Code, Claude Desktop, and other MCP-compatible clients.
+A Model Context Protocol (MCP) server that enables AI agents to interact with GitLab. This server exposes GitLab operations as MCP tools, allowing seamless integration with Claude Code, Claude Desktop, and other MCP-compatible clients.
 
 [日本語版ドキュメント](docs/README.ja.md)
 
 ## Features
 
 - **MR Lifecycle Management**: Create, update, merge, and close merge requests
+- **Issue Management**: Create, update, delete issues with full comment and discussion support
 - **Code Review Support**: Add comments, create discussions, approve/unapprove MRs
-- **CI/CD Integration**: View pipeline status and job details
+- **CI/CD Integration**: List, create, retry, cancel pipelines; view job details and logs
 - **Change Analysis**: Get detailed file diffs and changes
 - **Flexible Access Control**: Enable/disable tools via environment variables
 - **Secure**: Personal Access Token authentication with token masking in logs
@@ -114,12 +115,36 @@ export GITLAB_MCP_DISABLED_TOOLS="merge_merge_request,approve_merge_request"
 | `unapprove_merge_request` | Remove approval from a merge request |
 | `get_merge_request_approvals` | Get approval status and list of approvers |
 
+### Issue Operations
+
+| Tool | Description |
+|------|-------------|
+| `list_issues` | List issues in a project with filtering (state, labels, assignee, author, search) |
+| `get_issue` | Get detailed information about a specific issue |
+| `create_issue` | Create a new issue |
+| `update_issue` | Update an existing issue (title, description, state, labels, assignees) |
+| `delete_issue` | Delete an issue |
+| `list_issue_notes` | List comments on an issue |
+| `create_issue_note` | Add a comment to an issue |
+| `delete_issue_note` | Delete a comment from an issue |
+| `list_issue_discussions` | List all discussions on an issue |
+| `create_issue_discussion` | Create a new discussion on an issue |
+| `reply_to_issue_discussion` | Reply to an existing issue discussion |
+
 ### Pipeline & CI/CD
 
 | Tool | Description |
 |------|-------------|
 | `list_merge_request_pipelines` | List pipelines associated with a merge request |
 | `get_pipeline_jobs` | Get jobs in a specific pipeline |
+| `list_project_pipelines` | List pipelines in a project with filtering (status, ref, sha, source) |
+| `get_pipeline` | Get detailed information about a specific pipeline |
+| `create_pipeline` | Create a new pipeline for a branch or tag |
+| `retry_pipeline` | Retry failed jobs in a pipeline |
+| `cancel_pipeline` | Cancel a running pipeline |
+| `get_pipeline_job` | Get detailed information about a specific job |
+| `get_job_log` | Get the log/trace output of a job (max 100KB) |
+| `retry_pipeline_job` | Retry a specific job |
 
 ## Usage with MCP Clients
 
@@ -174,6 +199,10 @@ Once configured, you can ask Claude to:
 - "Add a comment to MR #42 saying 'LGTM!'"
 - "Approve MR #42"
 - "What's the pipeline status for MR #42?"
+- "List all open issues with the 'bug' label"
+- "Create an issue titled 'Fix login page' with description"
+- "Retry the failed pipeline on main branch"
+- "Show me the job log for the failed build"
 
 ## Development
 
@@ -206,6 +235,7 @@ go test ./...
 │   └── tools/             # MCP tool implementations
 │       ├── approval/      # Approval tools
 │       ├── discussion/    # Discussion tools
+│       ├── issue/         # Issue tools
 │       ├── mergerequest/  # Merge request tools
 │       └── pipeline/      # Pipeline tools
 └── test/integration/      # Integration tests

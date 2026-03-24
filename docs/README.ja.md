@@ -4,15 +4,16 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](../LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 
-AI エージェントが GitLab の Merge Request を操作できるようにする Model Context Protocol (MCP) サーバーです。GitLab の MR 操作を MCP ツールとして公開し、Claude Code、Claude Desktop、その他の MCP 対応クライアントとシームレスに連携できます。
+AI エージェントが GitLab を操作できるようにする Model Context Protocol (MCP) サーバーです。GitLab の操作を MCP ツールとして公開し、Claude Code、Claude Desktop、その他の MCP 対応クライアントとシームレスに連携できます。
 
 [English Documentation](../README.md)
 
 ## 機能
 
 - **MR ライフサイクル管理**: Merge Request の作成、更新、マージ、クローズ
+- **Issue 管理**: Issue の作成、更新、削除、コメント・ディスカッション対応
 - **コードレビュー支援**: コメント追加、ディスカッション作成、承認/承認取消
-- **CI/CD 連携**: パイプライン状態とジョブ詳細の確認
+- **CI/CD 連携**: パイプラインの一覧、作成、リトライ、キャンセル、ジョブ詳細・ログ取得
 - **変更分析**: ファイル差分と変更内容の詳細取得
 - **柔軟なアクセス制御**: 環境変数によるツールの有効化/無効化
 - **セキュア**: Personal Access Token 認証、ログへのトークン出力防止
@@ -114,12 +115,36 @@ export GITLAB_MCP_DISABLED_TOOLS="merge_merge_request,approve_merge_request"
 | `unapprove_merge_request` | Merge Request の承認を取り消し |
 | `get_merge_request_approvals` | 承認状態と承認者一覧を取得 |
 
+### Issue 操作
+
+| ツール | 説明 |
+|--------|------|
+| `list_issues` | プロジェクトの Issue 一覧を取得（state, labels, assignee, author, search フィルタ対応） |
+| `get_issue` | 特定の Issue の詳細情報を取得 |
+| `create_issue` | 新しい Issue を作成 |
+| `update_issue` | 既存の Issue を更新（タイトル、説明、状態、ラベル、担当者） |
+| `delete_issue` | Issue を削除 |
+| `list_issue_notes` | Issue のコメント一覧を取得 |
+| `create_issue_note` | Issue にコメントを追加 |
+| `delete_issue_note` | Issue のコメントを削除 |
+| `list_issue_discussions` | Issue の全ディスカッションを一覧取得 |
+| `create_issue_discussion` | Issue にディスカッションを作成 |
+| `reply_to_issue_discussion` | Issue のディスカッションに返信 |
+
 ### パイプライン・CI/CD
 
 | ツール | 説明 |
 |--------|------|
 | `list_merge_request_pipelines` | Merge Request に関連するパイプライン一覧を取得 |
 | `get_pipeline_jobs` | 特定のパイプラインのジョブ一覧を取得 |
+| `list_project_pipelines` | プロジェクトのパイプライン一覧を取得（status, ref, sha, source フィルタ対応） |
+| `get_pipeline` | 特定のパイプラインの詳細情報を取得 |
+| `create_pipeline` | ブランチまたはタグに対して新しいパイプラインを作成 |
+| `retry_pipeline` | パイプラインの失敗したジョブを再試行 |
+| `cancel_pipeline` | 実行中のパイプラインをキャンセル |
+| `get_pipeline_job` | 特定のジョブの詳細情報を取得 |
+| `get_job_log` | ジョブのログ出力を取得（最大 100KB） |
+| `retry_pipeline_job` | 特定のジョブを再試行 |
 
 ## MCP クライアントでの使用方法
 
@@ -174,6 +199,10 @@ Claude Code の設定に追加：
 - 「MR #42 に 'LGTM!' とコメントして」
 - 「MR #42 を承認して」
 - 「MR #42 のパイプライン状態を確認して」
+- 「'bug' ラベルの付いた open な Issue を一覧表示して」
+- 「'ログインページの修正' というタイトルで Issue を作成して」
+- 「main ブランチの失敗したパイプラインをリトライして」
+- 「失敗したビルドのジョブログを表示して」
 
 ## 開発
 
@@ -206,6 +235,7 @@ go test ./...
 │   └── tools/             # MCP ツール実装
 │       ├── approval/      # 承認ツール
 │       ├── discussion/    # ディスカッションツール
+│       ├── issue/         # Issue ツール
 │       ├── mergerequest/  # Merge Request ツール
 │       └── pipeline/      # パイプラインツール
 └── test/integration/      # 統合テスト
