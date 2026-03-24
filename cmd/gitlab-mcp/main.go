@@ -12,6 +12,7 @@ import (
 	"github.com/kqns91/gitlab-mcp/internal/registry"
 	"github.com/kqns91/gitlab-mcp/internal/tools/approval"
 	"github.com/kqns91/gitlab-mcp/internal/tools/discussion"
+	"github.com/kqns91/gitlab-mcp/internal/tools/issue"
 	"github.com/kqns91/gitlab-mcp/internal/tools/mergerequest"
 	"github.com/kqns91/gitlab-mcp/internal/tools/pipeline"
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -73,6 +74,7 @@ func registerAllTools(reg *registry.Registry, client *gitlab.Client) {
 	discussion.Register(reg, client)
 	approval.Register(reg, client)
 	pipeline.Register(reg, client)
+	issue.Register(reg, client)
 }
 
 func init() {
